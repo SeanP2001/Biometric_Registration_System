@@ -25,6 +25,12 @@ public:
   void printField();
   void selectField();
   void deselectField();
+  void incrementDays();
+  void decrementDays();
+  void incrementTime();
+  void decrementTime();
+
+  bool isSelected();
 
 private:
 

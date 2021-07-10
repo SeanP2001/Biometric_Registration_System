@@ -41,6 +41,10 @@ Field::Field(enum Field::Format _format, int _value, int _column, int _row)
     }
     if (format == TIME)                            // TIME FIELDS
     {
+      if (value < 10)
+      {
+        lcd.print("0");
+      }
       lcd.print(value);                            // print the time
     }
 
@@ -55,16 +59,74 @@ Field::Field(enum Field::Format _format, int _value, int _column, int _row)
   }
 
 
+//--------------------------------------------S E L E C T   F I E L D--------------------------------------------
   void Field::selectField()
   {
     cursors = true;
   }
 
+
+//------------------------------------------D E S E L E C T   F I E L D------------------------------------------
   void Field::deselectField()
   {
     cursors = false;
   }
 
+
+//------------------------------------------I N C R E M E N T   D A Y S------------------------------------------
+  void Field::incrementDays()
+  {
+    if (value >= 5)          // if the day is set to Friday
+    {
+      value = 1;             // increment it to Monday
+    }
+    else
+    {
+      value++;               // otherwise just increment normally
+    }  
+  }
+
+
+//------------------------------------------D E C R E M E N T   D A Y S------------------------------------------  
+  void Field::decrementDays()
+  {
+    if (value <= 1)          // if the day is set to Monday
+    {
+      value = 5;             // decrement it to Friday
+    }
+    else
+    {
+      value--;               // otherwise just decrement normally
+    } 
+  }
+
+
+//------------------------------------------I N C R E M E N T   T I M E------------------------------------------
+  void Field::incrementTime()
+  {
+    if (value < 20)          // if less than 20 minutes
+    {
+      value = value + 5;     // increment the time by 5 minutes
+    }
+  }
+
+
+//------------------------------------------D E C R E M E N T   T I M E------------------------------------------  
+  void Field::decrementTime()
+  {
+    if (value > 5)          // if more than 5 minutes
+    {
+      value = value - 5;    // decrement the time by 5 minutes
+    }
+  }
+  
+
+//---------------------------------------------I S   S E L E C T E D---------------------------------------------
+  bool Field::isSelected()
+  {
+    return cursors;          // if the cursors are on then it is selected 
+  }
+//-------------------------------------------P R I N T   C U R S O R S-------------------------------------------  
   void Field::printCursors()
   {
     if (format == DAY)
@@ -88,6 +150,8 @@ Field::Field(enum Field::Format _format, int _value, int _column, int _row)
     }
   }
 
+
+//-------------------------------------------R E M O V E   C U R S O R S-------------------------------------------  
   void Field::removeCursors()
   {
     if (format == DAY)

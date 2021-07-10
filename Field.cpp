@@ -3,7 +3,7 @@
 
 #include <LiquidCrystal_I2C.h>
 
-LiquidCrystal_I2C lcd(0x27,16,2);            // 1602 LCD Setup
+extern LiquidCrystal_I2C lcd;            // 1602 LCD Setup
 
 
 
@@ -16,17 +16,32 @@ Field::Field(enum Field::Format _format, int _value, int _column, int _row)
     this->column = _column;
   }
 
-  void Field::displaySetup(){
-    lcd.init();                                   // initialise the LCD
-    lcd.backlight();                              // Turn on the LCD Backlight
-  }
 
+//--------------------------------------------P R I N T   F I E L D--------------------------------------------
   void Field::printField()
   {
-    if (format == NUMBER)
+    lcd.setCursor(column, row);                    // move to the specified location on the screen
+    
+    if (format == DAY)                             // DAY FIELDS
+    {    
+      switch(value) {                              // display the day
+      case 1 : lcd.print("MON"); break;
+      case 2 : lcd.print("TUE"); break;
+      case 3 : lcd.print("WED"); break;
+      case 4 : lcd.print("THU"); break;
+      case 5 : lcd.print("FRI"); break;
+      }
+    }
+    if (format == NUMBER)                          // NUMBER FIELDS
     {
-      lcd.setCursor(column, row);
-      lcd.print(value);
+      if (value < 10)                              // values above 9 represent a blank digit
+      {
+        lcd.print(value);                          // print digits that are not blank
+      }
+    }
+    if (format == TIME)                            // TIME FIELDS
+    {
+      lcd.print(value);                            // print the time
     }
   }
   

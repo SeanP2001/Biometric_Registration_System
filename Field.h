@@ -11,7 +11,7 @@ public:
     UNSPECIFIED,                       
     DAY,
     NUMBER,
-    TIME
+    TIME,
   };
 
   bool cursors;
@@ -21,8 +21,7 @@ public:
   int column;
   
   Field(enum Field::Format _format, int _value, int _column, int _row);
-
-  void displaySetup();
+  
   void printField();
 };
 

@@ -1,20 +1,37 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Biometric Registration System
 // Sean Price
-// V0.1
-// Setup Field Class variables, construcor and number print
+// V0.2
+// Setup the display class with classSetupScreen function 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include "Field.h"
+#include "Display.h"
 
- Field number(Field::NUMBER, 5, 2, 0);
+                      //***** Field obj(Format, Value, Column, Row) ******//
 
-void setup() {
-  number.displaySetup();
+ Field day(Field::DAY, 1, 1, 0);                 // Setup day field (Monday by default)
+
+ Field classNo1(Field::NUMBER, 10, 11, 0);       // Setup classNo digit fields
+ Field classNo2(Field::NUMBER, 10, 12, 0);       // All of the digits are blank (10) by default
+ Field classNo3(Field::NUMBER, 10, 13, 0);
+ Field classNo4(Field::NUMBER, 10, 14, 0);
+
+ Field timeOpen(Field::TIME, 10, 6, 1);          // Setup timeOpen Field (10 mins by default)
+
+ Display display; 
+
+
+//----------------------------------------------------------------S E T U P----------------------------------------------------------------
+void setup() 
+{
+  display.displaySetup();                            // Setup the display
 }
 
-void loop() {
-  number.printField();
-  //number.column++;
+
+//-----------------------------------------------------------------M A I N-----------------------------------------------------------------
+void loop() 
+{
+  display.classSetupScreen();                        // Print the class setup screen
   delay(2000);
-}
+} 

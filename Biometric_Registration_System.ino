@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Biometric Registration System
 // Sean Price
-// V0.2
-// Setup the display class with classSetupScreen function 
+// V0.3
+// Setup the selectField, deselectField, printCursors and removeCursors functions 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include "Field.h"
@@ -32,6 +32,12 @@ void setup()
 //-----------------------------------------------------------------M A I N-----------------------------------------------------------------
 void loop() 
 {
+  day.selectField();
   display.classSetupScreen();                        // Print the class setup screen
   delay(2000);
+  day.deselectField();
+  timeOpen.selectField();
+  display.classSetupScreen();                        // Print the class setup screen
+  delay(2000);
+  timeOpen.deselectField();
 } 

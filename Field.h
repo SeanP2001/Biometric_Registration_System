@@ -23,6 +23,13 @@ public:
   Field(enum Field::Format _format, int _value, int _column, int _row);
   
   void printField();
+  void selectField();
+  void deselectField();
+
+private:
+
+  void printCursors();
+  void removeCursors();
 };
 
 #endif // _FIELD_H_

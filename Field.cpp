@@ -43,5 +43,66 @@ Field::Field(enum Field::Format _format, int _value, int _column, int _row)
     {
       lcd.print(value);                            // print the time
     }
+
+    if (cursors == true)
+    {
+      printCursors();
+    }
+    else
+    {
+      removeCursors();
+    }
+  }
+
+
+  void Field::selectField()
+  {
+    cursors = true;
+  }
+
+  void Field::deselectField()
+  {
+    cursors = false;
+  }
+
+  void Field::printCursors()
+  {
+    if (format == DAY)
+    {
+      lcd.setCursor((column - 1), row);
+      lcd.print(">");
+      lcd.setCursor((column + 3), row);
+      lcd.print("<");
+    }
+    if (format == NUMBER)
+    {
+      lcd.setCursor(column, row);
+      lcd.print("_");
+    }
+    if (format == TIME)
+    {
+      lcd.setCursor((column - 1), row);
+      lcd.print(">");
+      lcd.setCursor((column + 2), row);
+      lcd.print("<");
+    }
+  }
+
+  void Field::removeCursors()
+  {
+    if (format == DAY)
+    {
+      lcd.setCursor((column - 1), row);
+      lcd.print(" ");
+      lcd.setCursor((column + 3), row);
+      lcd.print(" ");
+    }
+    if (format == TIME)
+    {
+      lcd.setCursor((column - 1), row);
+      lcd.print(" ");
+      lcd.setCursor((column + 2), row);
+      lcd.print(" ");
+    }
   }
   

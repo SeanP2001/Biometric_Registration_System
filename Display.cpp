@@ -15,7 +15,8 @@ extern Field timeOpen;
 
 
 //------------------------------------------------D I S P L A Y   S E T U P------------------------------------------------
-  void Display::displaySetup(){
+  void Display::displaySetup()
+  {
     lcd.init();                                   // initialise the LCD
     lcd.backlight();                              // Turn on the LCD Backlight
   }

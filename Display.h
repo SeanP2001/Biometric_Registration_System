@@ -4,10 +4,9 @@
 
 #include <Arduino.h>
 
-class Display{
+class Display
+{
 public:
-  
-  //Field(enum Field::Format _format, int _value, int _column, int _row);
 
   void displaySetup();
   void classSetupScreen();

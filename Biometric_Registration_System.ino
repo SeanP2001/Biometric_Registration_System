@@ -1,12 +1,13 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Biometric Registration System
 // Sean Price
-// V0.3
-// Setup the selectField, deselectField, printCursors and removeCursors functions 
+// V0.4
+// Added the Button class and the selectNextField function
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include "Field.h"
 #include "Display.h"
+#include "Button.h"
 
                       //***** Field obj(Format, Value, Column, Row) ******//
 
@@ -21,7 +22,11 @@
 
  Display display; 
 
+ Button left(700, 100);
+ Button middle(500, 100);
+ Button right(300, 100);
 
+ 
 //----------------------------------------------------------------S E T U P----------------------------------------------------------------
 void setup() 
 {
@@ -33,11 +38,46 @@ void setup()
 void loop() 
 {
   day.selectField();
-  display.classSetupScreen();                        // Print the class setup screen
-  delay(2000);
-  day.deselectField();
-  timeOpen.selectField();
-  display.classSetupScreen();                        // Print the class setup screen
-  delay(2000);
+  int i = 0;
+  while (i < 6)
+  {
+    display.classSetupScreen();                        // Print the class setup screen
+    if (middle.buttonIsPressed())
+    {
+      selectNextField();
+      i++;
+    }
+  }
   timeOpen.deselectField();
 } 
+
+
+//----------------------------------------------------S E L E C T   N E X T   F I E L D----------------------------------------------------
+void selectNextField()
+{
+  if (day.cursors == true)
+  {
+    day.deselectField();
+    classNo1.selectField();
+  }
+  else if (classNo1.cursors == true)
+  {
+    classNo1.deselectField();
+    classNo2.selectField();
+  }
+  else if (classNo2.cursors == true)
+  {
+    classNo2.deselectField();
+    classNo3.selectField();
+  }
+  else if (classNo3.cursors == true)
+  {
+    classNo3.deselectField();
+    classNo4.selectField();
+  }
+  else if (classNo4.cursors == true)
+  {
+    classNo4.deselectField();
+    timeOpen.selectField();
+  }
+}

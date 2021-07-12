@@ -1,11 +1,14 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Biometric Registration System
 // Sean Price
-// V0.6
-// Setup the TextField class and added the main menu
+// V0.7
+// Setup the fingerprint enrollment system
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include <Keypad_I2C.h>
+#include <Adafruit_Fingerprint.h>
+#include <math.h>
+
 
 #include "Field.h"
 #include "TextField.h"
@@ -13,11 +16,16 @@
 #include "Button.h"
 
 
+                         //***** TextField obj(Text, Column, Row) ******//
  TextField registerFinger("REGISTER FINGER", 1, 0);
  TextField setupClass("SETUP CLASS", 1, 1);
  
                       //***** Field obj(Format, Value, Column, Row) ******//
 
+ Field idNo1(Field::NUMBER, 10, 7, 1);           // Setup idNo digit fields
+ Field idNo2(Field::NUMBER, 10, 8, 1);           // All of the digits are blank (10) by default
+ Field idNo3(Field::NUMBER, 10, 9, 1);
+                      
  Field day(Field::DAY, 1, 1, 0);                 // Setup day field (Monday by default)
 
  Field classNo1(Field::NUMBER, 10, 11, 0);       // Setup classNo digit fields
@@ -27,9 +35,11 @@
 
  Field timeOpen(Field::TIME, 10, 6, 1);          // Setup timeOpen Field (10 mins by default)
 
+                                  //***** Display obj ******//
  Display display; 
 
- Button left(700, 100);
+                       //***** Button obj(AnalogValue, Tolerance) ******//
+ Button left(700, 100);          
  Button middle(500, 100);
  Button right(300, 100);
 
@@ -53,19 +63,32 @@ byte colPins [COLS] = {4, 5, 6, 7};          // Keypad column pins
 
 Keypad_I2C keypad(makeKeymap (keys), rowPins, colPins, ROWS, COLS, I2CADDR, PCF8574);
 
+
+//               ***************************** FINGER SCANNING VARIABLES *****************************
+int id = 0;                                   // variable storing user typed ID for enrollment
+
+volatile int fingerID = -1;                  // variable storing scanned finger ID
+
+SoftwareSerial mySerial(2, 3);               // TX/RX on fingerprint sensor
+
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
+
+bool authorised = false;                     // variable indicating if the register has been authorised
+
  
 //----------------------------------------------------------------S E T U P----------------------------------------------------------------
 void setup() 
 {
-  display.displaySetup();                            // Setup the display
+  display.displaySetup();                            // setup the display
   keypad.begin(makeKeymap (keys));                   // setup the keypad
+  finger.begin(57600);                               // setup fingerprint scanner
 }
 
 
 //-----------------------------------------------------------------M A I N-----------------------------------------------------------------
 void loop() 
 { 
-  mainMenu(); 
+  mainMenu();                                          // go to the main menu
 } 
 
 
@@ -87,15 +110,15 @@ void mainMenu()
     }
     if (middle.buttonIsPressed())                      // the middle button opens the finger registration
     {
-      // GO TO FINGER REGISTRATION
+      fingerRegistration();
     }
   }
 
-  while (setupClass.isSelected())                     // WHILE THE SETUP CLASS OPTION IS SELECTED
+  while (setupClass.isSelected())                      // WHILE THE SETUP CLASS OPTION IS SELECTED
   {
-    display.mainMenuScreen();                         // update the display
+    display.mainMenuScreen();                          // update the display
     
-    if (left.buttonIsPressed())                       // the left button moves the cursor up
+    if (left.buttonIsPressed())                        // the left button moves the cursor up
     {
       registerFinger.selectField();
       setupClass.deselectField();    
@@ -108,10 +131,68 @@ void mainMenu()
 }
 
 
+//--------------------------------------------------F I N G E R   R E G I S T R A T I O N--------------------------------------------------
+void fingerRegistration()
+{
+  display.clearScreen();
+  
+  idNo1.resetField();
+  idNo2.resetField();
+  idNo3.resetField();
+
+  idNo1.selectField();
+
+  while (idNo1.isSelected())                        // WHILE IDNO1 IS SELECTED
+  {
+    display.enterIDScreen();                         
+    getAndPrintNumber(idNo1);                       // get and print the number
+  }
+  while (idNo2.isSelected())                        // WHILE IDNO2 IS SELECTED
+  {
+    display.enterIDScreen();
+    getAndPrintNumber(idNo2);                       // get and print the number
+  }
+  while (idNo3.isSelected())                        // WHILE IDNO3 IS SELECTED
+  {
+    display.enterIDScreen();
+    getAndPrintNumber(idNo3);                       // get and print the number
+    display.enterIDScreen();
+    delay(1000);
+  }
+
+  id = ((idNo1.value * pow(10, 2)) + (idNo2.value * pow(10, 1)) + (idNo3.value * pow(10, 0)));
+
+  if ((id == 0) || (id > 127)){    // if the ID is invalid
+    display.clearScreen();
+    display.invalidIDScreen();
+    delay(2000);
+    fingerRegistration();
+  }
+   
+  display.clearScreen();
+  display.userID(id);
+  
+  display.scanFinger();
+  //delay(5000);
+  while (!  getFingerprintEnroll() );
+
+  display.fingerRegistered();
+  delay(2000);
+
+  mainMenu();
+}
 //----------------------------------------------------------C L A S S   S E T U P----------------------------------------------------------
 void classSetup()
 {
   display.clearScreen();
+
+  day.resetField();
+  classNo1.resetField();
+  classNo2.resetField();
+  classNo3.resetField();
+  classNo4.resetField();
+  timeOpen.resetField();
+
   
   day.selectField();                                   // select the day field
 
@@ -137,18 +218,22 @@ void classSetup()
   
   while (classNo1.isSelected())                        // WHILE CLASSNO1 IS SELECTED
   {
+    display.classSetupScreen();                        // Print the class setup screen
     getAndPrintNumber(classNo1);                       // get and print the number
   }
   while (classNo2.isSelected())                        // WHILE CLASSNO2 IS SELECTED
   {
+    display.classSetupScreen();                        // Print the class setup screen
     getAndPrintNumber(classNo2);                       // get and print the number
   }
   while (classNo3.isSelected())                        // WHILE CLASSNO3 IS SELECTED
   {
+    display.classSetupScreen();                        // Print the class setup screen
     getAndPrintNumber(classNo3);                       // get and print the number
   }
   while (classNo4.isSelected())                        // WHILE CLASSNO4 IS SELECTED
   {
+    display.classSetupScreen();                        // Print the class setup screen
     getAndPrintNumber(classNo4);                       // get and print the number
   }
     
@@ -174,16 +259,12 @@ void classSetup()
 //-------------------------------------------------G E T   A N D   P R I N T   N U M B E R-------------------------------------------------
 void getAndPrintNumber(Field &field)
 {
-  
-  display.classSetupScreen();                                 // Print the class setup screen
     
   while((field.value = (int)(keypad.getKey()))==NO_KEY) {     // wait for a key to be pressed and set the classNo value to that number
     delay(1);                                            
   } 
 
   field.value = field.value - 48;                             // convert char value to int value ( 1 = 49 )
-
-  display.classSetupScreen();                                 // Print the class setup screen
 
   selectNextField();
 }
@@ -216,4 +297,83 @@ void selectNextField()
     classNo4.deselectField();
     timeOpen.selectField();
   }
+
+  if (idNo1.isSelected())
+  {
+    idNo1.deselectField();
+    idNo2.selectField();
+  }
+  else if (idNo2.isSelected())
+  {
+    idNo2.deselectField();
+    idNo3.selectField();
+  }
+  else if (idNo3.isSelected())
+  {
+    idNo3.deselectField();
+  }
+}
+
+
+//--------------------------------------------G E T   F I N G E R P R I N T   I D----------------------------------------
+int getFingerprintID() {
+  uint8_t p = finger.getImage();
+  if (p!=2){
+    Serial.println(p);
+  }
+  if (p != FINGERPRINT_OK)  return -1;
+  
+  p = finger.image2Tz();
+  if (p!=2){
+    Serial.println(p);
+  }
+  if (p != FINGERPRINT_OK)  return -1;
+
+  p = finger.fingerFastSearch();
+  if (p != FINGERPRINT_OK)  return -2;
+
+  
+  // found a match!
+  return finger.fingerID; 
+}
+
+
+//----------------------------------------G E T   F I N G E R P R I N T   E N R O L L------------------------------------
+uint8_t getFingerprintEnroll() {
+
+  int p = -1;
+  while (p != FINGERPRINT_OK) {
+    p = finger.getImage();
+  }
+
+  // OK success!
+
+  p = finger.image2Tz(1);
+  
+  display.removeFinger();
+  
+  delay(2000);
+  p = 0;
+  while (p != FINGERPRINT_NOFINGER) {
+    p = finger.getImage();
+  }
+  
+  display.scanAgain();
+  
+  
+  while (p != FINGERPRINT_OK) {
+    p = finger.getImage();
+  }
+
+  // OK success!
+
+  p = finger.image2Tz(2);
+
+  // OK converted!
+  
+  p = finger.createModel();
+  
+  p = finger.storeModel(id);
+
+  return true;
 }

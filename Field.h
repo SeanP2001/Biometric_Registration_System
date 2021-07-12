@@ -25,6 +25,7 @@ public:
   void printField();
   void selectField();
   void deselectField();
+  void resetField();
   void incrementDays();
   void decrementDays();
   void incrementTime();

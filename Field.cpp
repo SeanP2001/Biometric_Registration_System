@@ -73,6 +73,28 @@ Field::Field(enum Field::Format _format, int _value, int _column, int _row)
   }
 
 
+//---------------------------------------------R E S E T   F I E L D---------------------------------------------
+  void Field::resetField()
+  {
+    int defaultDay = 1;         // Monday
+    int defaultNumber = 10;     // blank
+    int defaultTime = 10;       // 10 Minutes
+    
+    if (format == DAY)
+    {
+      value = defaultDay;
+    }
+    if (format == NUMBER)
+    {
+      value = defaultNumber;
+    }
+    if (format == TIME)
+    {
+      value = defaultTime;
+    }
+  }
+
+  
 //------------------------------------------I N C R E M E N T   D A Y S------------------------------------------
   void Field::incrementDays()
   {

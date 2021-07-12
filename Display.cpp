@@ -7,10 +7,16 @@
 
 LiquidCrystal_I2C lcd(0x27,16,2);            // 1602 LCD Setup
 
+// ********************** Access Field Objects **********************
+
 extern TextField registerFinger;
 extern TextField setupClass;
 
-extern Field day;                            // access Field objects 
+extern Field idNo1;
+extern Field idNo2;
+extern Field idNo3;
+
+extern Field day;                            
 extern Field classNo1;
 extern Field classNo2;
 extern Field classNo3;
@@ -38,6 +44,76 @@ extern Field timeOpen;
   {
     registerFinger.printField();
     setupClass.printField();
+  }
+
+
+//----------------------------------------------E N T E R   I D   S C R E E N----------------------------------------------
+  void Display::enterIDScreen()
+  {
+    lcd.setCursor(0,0);
+    lcd.print("ENTER ID NUMBER:");
+
+    lcd.setCursor(6,1);
+    lcd.print("#");
+
+    idNo1.printField();
+    idNo2.printField();
+    idNo3.printField();
+  }
+
+
+//--------------------------------------------I N V A L I D   I D   S C R E E N--------------------------------------------
+  void Display::invalidIDScreen()
+  {
+    lcd.setCursor(0,0);
+    lcd.print("   INVALID ID   ");
+  }
+
+
+//----------------------------------------------D I S P L A Y   U S E R   I D----------------------------------------------
+  void Display::userID(int idNo)
+  {
+    lcd.setCursor(0,0);
+    lcd.print("   USER  #");
+  
+    if (idNo < 100)
+      lcd.print("0");
+    if (idNo < 10)
+      lcd.print("0");
+    
+    lcd.print(idNo);
+  }
+
+
+//------------------------------------------D I S P L A Y   S C A N   F I N G E R------------------------------------------
+  void Display::scanFinger()
+  {
+    lcd.setCursor(0,1);
+    lcd.print("  SCAN  FINGER  ");
+  }
+
+
+//----------------------------------------D I S P L A Y   R E M O V E   F I N G E R----------------------------------------
+  void Display::removeFinger()
+  {
+    lcd.setCursor(0,1);
+    lcd.print(" REMOVE  FINGER ");
+  }
+
+
+//-------------------------------------------D I S P L A Y   S C A N   A G A I N-------------------------------------------
+  void Display::scanAgain()
+  {
+    lcd.setCursor(0,1);
+    lcd.print("   SCAN AGAIN   ");
+  }
+
+  
+//------------------------------------D I S P L A Y   F I N G E R   R E G I S T E R E D------------------------------------
+  void Display::fingerRegistered()
+  {
+    lcd.setCursor(0,1);
+    lcd.print("   REGISTERED   ");
   }
 
   

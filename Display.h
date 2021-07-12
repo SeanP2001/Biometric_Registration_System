@@ -9,6 +9,8 @@ class Display
 public:
 
   void displaySetup();
+  void clearScreen();
+  void mainMenuScreen();
   void classSetupScreen();
 };
 

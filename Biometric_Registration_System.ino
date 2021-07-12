@@ -1,16 +1,21 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Biometric Registration System
 // Sean Price
-// V0.5
-// Completed the class setup screen with button and keypad inputs to set the field contents
+// V0.6
+// Setup the TextField class and added the main menu
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include <Keypad_I2C.h>
 
 #include "Field.h"
+#include "TextField.h"
 #include "Display.h"
 #include "Button.h"
 
+
+ TextField registerFinger("REGISTER FINGER", 1, 0);
+ TextField setupClass("SETUP CLASS", 1, 1);
+ 
                       //***** Field obj(Format, Value, Column, Row) ******//
 
  Field day(Field::DAY, 1, 1, 0);                 // Setup day field (Monday by default)
@@ -59,7 +64,55 @@ void setup()
 
 //-----------------------------------------------------------------M A I N-----------------------------------------------------------------
 void loop() 
+{ 
+  mainMenu(); 
+} 
+
+
+//------------------------------------------------------------M A I N   M E N U------------------------------------------------------------
+void mainMenu()
 {
+  display.clearScreen();                               // clear the screen
+  
+  registerFinger.selectField();                        // select register finger
+  
+  while (registerFinger.isSelected())                  // WHILE THE REGISTER FINGER OPTION IS SELECTED
+  {
+    display.mainMenuScreen();                          // update the display
+    
+    if (right.buttonIsPressed())                       // the right button moves the cursor down
+    {
+      registerFinger.deselectField();
+      setupClass.selectField();
+    }
+    if (middle.buttonIsPressed())                      // the middle button opens the finger registration
+    {
+      // GO TO FINGER REGISTRATION
+    }
+  }
+
+  while (setupClass.isSelected())                     // WHILE THE SETUP CLASS OPTION IS SELECTED
+  {
+    display.mainMenuScreen();                         // update the display
+    
+    if (left.buttonIsPressed())                       // the left button moves the cursor up
+    {
+      registerFinger.selectField();
+      setupClass.deselectField();    
+    }
+    if (middle.buttonIsPressed())                      // the middle button opens the class setup menu
+    {
+      classSetup();                                    
+    }
+  }
+}
+
+
+//----------------------------------------------------------C L A S S   S E T U P----------------------------------------------------------
+void classSetup()
+{
+  display.clearScreen();
+  
   day.selectField();                                   // select the day field
 
   while (day.isSelected())                             // WHILE THE DAY IS SELECTED
@@ -117,10 +170,7 @@ void loop()
       //MOVE TO THE NEXT SCREEN
     }
   }
-  
-} 
-
-
+}
 //-------------------------------------------------G E T   A N D   P R I N T   N U M B E R-------------------------------------------------
 void getAndPrintNumber(Field &field)
 {

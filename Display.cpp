@@ -1,10 +1,14 @@
 
 #include "Field.h"
+#include "TextField.h"
 #include "Display.h"
 
 #include <LiquidCrystal_I2C.h>
 
 LiquidCrystal_I2C lcd(0x27,16,2);            // 1602 LCD Setup
+
+extern TextField registerFinger;
+extern TextField setupClass;
 
 extern Field day;                            // access Field objects 
 extern Field classNo1;
@@ -22,6 +26,21 @@ extern Field timeOpen;
   }
 
 
+//-------------------------------------------------C L E A R   S C R E E N-------------------------------------------------
+  void Display::clearScreen()
+  {
+    lcd.clear();
+  }
+
+  
+//---------------------------------------------M A I N   M E N U   S C R E E N---------------------------------------------
+  void Display::mainMenuScreen()
+  {
+    registerFinger.printField();
+    setupClass.printField();
+  }
+
+  
 //-------------------------------------------C L A S S   S E T U P   S C R E E N-------------------------------------------
   void Display::classSetupScreen()
   {

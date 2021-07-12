@@ -19,6 +19,10 @@ public:
   void scanAgain();
   void fingerRegistered();
   void classSetupScreen();
+  void authorisationScreen();
+  void authorisationSuccess();
+  void authorisationFail();
+  void scanToRegister();
 };
 
 #endif // _DISPLAY_H_

@@ -138,4 +138,43 @@ extern Field timeOpen;
     lcd.setCursor((timeOpen.column + 3), timeOpen.row);
     lcd.print("MINS");
   }
-  
+
+
+//-----------------------------------------A U T H O R I S A T I O N   S C R E E N-----------------------------------------
+  void Display::authorisationScreen()
+  {
+    lcd.setCursor(0,0);                                        
+    lcd.print("    SCAN  TO    ");
+    lcd.setCursor(0,1);
+    lcd.print(" OPEN  REGISTER ");
+  }
+
+
+//----------------------------------------A U T H O R I S A T I O N   S U C C E S S----------------------------------------
+  void Display::authorisationSuccess()
+  {
+    lcd.setCursor(0,0);                                        
+    lcd.print("    REGISTER    ");
+    lcd.setCursor(0,1);
+    lcd.print("      OPEN      ");
+  }
+
+
+//-------------------------------------------A U T H O R I S A T I O N   F A I L-------------------------------------------
+  void Display::authorisationFail()
+  {
+    lcd.setCursor(0,0);                                      
+    lcd.print("  AUTHORISATION ");
+    lcd.setCursor(0,1);
+    lcd.print("     FAILED     ");
+  }
+
+
+//---------------------------------------------S C A N   T O   R E G I S T E R---------------------------------------------
+  void Display::scanToRegister()
+  {
+    lcd.setCursor(0,0);                                        
+    lcd.print("    SCAN  TO    ");
+    lcd.setCursor(0,1);
+    lcd.print("    REGISTER    ");
+  }

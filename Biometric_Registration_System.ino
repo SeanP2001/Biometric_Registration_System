@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Biometric Registration System
 // Sean Price
-// V0.7
-// Setup the fingerprint enrollment system
+// V0.8
+// Setup the register authorisation and scanning
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include <Keypad_I2C.h>
@@ -75,6 +75,8 @@ Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
 bool authorised = false;                     // variable indicating if the register has been authorised
 
+int startTime = 0;                           // variable storing the time that the register opened
+
  
 //----------------------------------------------------------------S E T U P----------------------------------------------------------------
 void setup() 
@@ -134,64 +136,66 @@ void mainMenu()
 //--------------------------------------------------F I N G E R   R E G I S T R A T I O N--------------------------------------------------
 void fingerRegistration()
 {
-  display.clearScreen();
+  display.clearScreen();                                                                                    // clear the screen
   
-  idNo1.resetField();
+  idNo1.resetField();                                                                                       // reset the ID number
   idNo2.resetField();
   idNo3.resetField();
 
-  idNo1.selectField();
+  idNo1.selectField();                                                                                      // select the first ID number Field
 
-  while (idNo1.isSelected())                        // WHILE IDNO1 IS SELECTED
+  while (idNo1.isSelected())                                                                                // WHILE IDNO1 IS SELECTED
   {
     display.enterIDScreen();                         
-    getAndPrintNumber(idNo1);                       // get and print the number
+    getAndPrintNumber(idNo1);                                                                               // get and print the number
   }
-  while (idNo2.isSelected())                        // WHILE IDNO2 IS SELECTED
+  while (idNo2.isSelected())                                                                                // WHILE IDNO2 IS SELECTED
   {
     display.enterIDScreen();
-    getAndPrintNumber(idNo2);                       // get and print the number
+    getAndPrintNumber(idNo2);                                                                               // get and print the number
   }
-  while (idNo3.isSelected())                        // WHILE IDNO3 IS SELECTED
+  while (idNo3.isSelected())                                                                                // WHILE IDNO3 IS SELECTED
   {
     display.enterIDScreen();
-    getAndPrintNumber(idNo3);                       // get and print the number
+    getAndPrintNumber(idNo3);                                                                               // get and print the number
     display.enterIDScreen();
     delay(1000);
   }
 
-  id = ((idNo1.value * pow(10, 2)) + (idNo2.value * pow(10, 1)) + (idNo3.value * pow(10, 0)));
+  id = ((idNo1.value * pow(10, 2)) + (idNo2.value * pow(10, 1)) + (idNo3.value * pow(10, 0)));              // convert the 3 digits to a single int
 
-  if ((id == 0) || (id > 127)){    // if the ID is invalid
-    display.clearScreen();
-    display.invalidIDScreen();
+  if ((id == 0) || (id > 127)){                                                                             // if the ID is invalid
+    display.clearScreen(); 
+    display.invalidIDScreen();                                                                              // display the invalid ID message
     delay(2000);
-    fingerRegistration();
+    fingerRegistration();                                                                                   // and return to the user ID entry screen
   }
    
   display.clearScreen();
-  display.userID(id);
+  display.userID(id);                                                                                       // otherwise, show the user ID
   
-  display.scanFinger();
-  //delay(5000);
-  while (!  getFingerprintEnroll() );
+  display.scanFinger();                                                                                     // display the scan finger message
+  
+  while (!  getFingerprintEnroll() );                                                                       // start the fingerprint enrollment process
 
-  display.fingerRegistered();
+  display.fingerRegistered();                                                                               // when it comletes successfully, show the "registered" message
   delay(2000);
 
-  mainMenu();
+  mainMenu();                                                                                               // and return to the main menu
 }
 //----------------------------------------------------------C L A S S   S E T U P----------------------------------------------------------
 void classSetup()
 {
-  display.clearScreen();
+  display.clearScreen();                               // clear the screen
 
-  day.resetField();
+  day.resetField();                                    // reset all of the fields
   classNo1.resetField();
   classNo2.resetField();
   classNo3.resetField();
   classNo4.resetField();
   timeOpen.resetField();
+
+  authorised = false;       
 
   
   day.selectField();                                   // select the day field
@@ -214,8 +218,7 @@ void classSetup()
     }
   }
 
-
-  
+ 
   while (classNo1.isSelected())                        // WHILE CLASSNO1 IS SELECTED
   {
     display.classSetupScreen();                        // Print the class setup screen
@@ -250,12 +253,80 @@ void classSetup()
     {
       timeOpen.incrementTime();
     }
-    if (middle.buttonIsPressed())
+    if (middle.buttonIsPressed())                      // the middle button advances to the authorise screen
     {
-      //MOVE TO THE NEXT SCREEN
+      authorise();                                                 
     }
   }
 }
+
+
+//---------------------------------------------------A U T H O R I S E-------------------------------------------------------
+void authorise()
+{
+  display.clearScreen();
+  
+  while(!authorised)                                           // wait until the register is authorised
+  {
+    display.authorisationScreen();                             // update display
+        
+    fingerID = getFingerprintID();                             // scan finger
+    
+    if ((fingerID > 0)&&(fingerID <= 5))                       // if a lecturer scans (ID 1-5)
+    {
+      display.authorisationSuccess();
+  
+      delay(2000);
+ 
+      authorised = true;                                       // set the register to authorised
+    }
+    else if (fingerID > 5)                                     // if somebody else scans
+    {
+      display.authorisationFail();                             // do not authorise
+       
+      delay(2000);
+    }
+    
+    delay(50);                                                 // don't need to run this at full speed.
+  }
+  scan();                                                      // once authorised, open the register
+}
+
+
+//-------------------------------------------------------S C A N-------------------------------------------------------------
+void scan()
+{
+  startTime = millis();                                                         // set the current time as the time the register opened
+
+  int classNo = ((classNo1.value * pow(10, 3)) + (classNo2.value * pow(10, 2)) 
+  + (classNo3.value * pow(10, 1)) + (classNo4.value * pow(10, 0)));
+  
+  
+  while((millis() - startTime) < (timeOpen.value * 60000))    // until the registration time is complete   
+  {
+    display.scanToRegister();
+  
+    fingerID = getFingerprintID();                            // get the ID of the fingerprint being scanned
+    
+    if (fingerID > 0)                                         // if a finger has been scanned
+    {
+      display.userID(fingerID);                               // display the user ID number
+      display.fingerRegistered();                             
+
+   
+      
+      delay(2000);
+    }
+    
+    delay(50);                                                // don't need to run this at full speed.
+  }
+
+  
+  mainMenu();                                                 // and return to the main menu
+  
+}
+
+
 //-------------------------------------------------G E T   A N D   P R I N T   N U M B E R-------------------------------------------------
 void getAndPrintNumber(Field &field)
 {

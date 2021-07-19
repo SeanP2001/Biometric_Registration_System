@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Biometric Registration System
 // Sean Price
-// V0.8
-// Setup the register authorisation and scanning
+// V0.9
+// Setup the Register class, allowing the data to be logged by the connected PC
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include <Keypad_I2C.h>
@@ -14,6 +14,7 @@
 #include "TextField.h"
 #include "Display.h"
 #include "Button.h"
+#include "Register.h"
 
 
                          //***** TextField obj(Text, Column, Row) ******//
@@ -43,7 +44,8 @@
  Button middle(500, 100);
  Button right(300, 100);
 
-
+                                 //***** Register obj ******//
+ Register registration;
 
  //                 ********************************* KEYPAD VARIABLES ***********************************
 #define I2CADDR 0x20                         // Set the I2C Address of the keypad
@@ -84,6 +86,7 @@ void setup()
   display.displaySetup();                            // setup the display
   keypad.begin(makeKeymap (keys));                   // setup the keypad
   finger.begin(57600);                               // setup fingerprint scanner
+  registration.setup(9600);                          // setup the register serial connection
 }
 
 
@@ -112,6 +115,7 @@ void mainMenu()
     }
     if (middle.buttonIsPressed())                      // the middle button opens the finger registration
     {
+      registerFinger.deselectField();
       fingerRegistration();
     }
   }
@@ -127,6 +131,7 @@ void mainMenu()
     }
     if (middle.buttonIsPressed())                      // the middle button opens the class setup menu
     {
+      setupClass.deselectField();
       classSetup();                                    
     }
   }
@@ -255,6 +260,7 @@ void classSetup()
     }
     if (middle.buttonIsPressed())                      // the middle button advances to the authorise screen
     {
+      timeOpen.deselectField();
       authorise();                                                 
     }
   }
@@ -298,9 +304,10 @@ void scan()
 {
   startTime = millis();                                                         // set the current time as the time the register opened
 
-  int classNo = ((classNo1.value * pow(10, 3)) + (classNo2.value * pow(10, 2)) 
-  + (classNo3.value * pow(10, 1)) + (classNo4.value * pow(10, 0)));
-  
+  //int classNo = ((classNo1.value * pow(10, 3)) + (classNo2.value * pow(10, 2)) 
+  //+ (classNo3.value * pow(10, 1)) + (classNo4.value * pow(10, 0)));
+
+  registration.open();                                         
   
   while((millis() - startTime) < (timeOpen.value * 60000))    // until the registration time is complete   
   {
@@ -313,7 +320,7 @@ void scan()
       display.userID(fingerID);                               // display the user ID number
       display.fingerRegistered();                             
 
-   
+      registration.user(fingerID);                            // log the user ID on the register
       
       delay(2000);
     }
@@ -389,15 +396,11 @@ void selectNextField()
 //--------------------------------------------G E T   F I N G E R P R I N T   I D----------------------------------------
 int getFingerprintID() {
   uint8_t p = finger.getImage();
-  if (p!=2){
-    Serial.println(p);
-  }
+  
   if (p != FINGERPRINT_OK)  return -1;
   
   p = finger.image2Tz();
-  if (p!=2){
-    Serial.println(p);
-  }
+
   if (p != FINGERPRINT_OK)  return -1;
 
   p = finger.fingerFastSearch();

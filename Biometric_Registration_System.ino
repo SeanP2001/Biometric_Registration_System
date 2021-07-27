@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Biometric Registration System
 // Sean Price
-// V0.9
-// Setup the Register class, allowing the data to be logged by the connected PC
+// V1.0
+// Fixed device reset and updated README.md
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include <Keypad_I2C.h>
@@ -16,6 +16,8 @@
 #include "Button.h"
 #include "Register.h"
 
+
+ void(* resetFunc) (void) = 0;                   // reset function declared at address 0
 
                          //***** TextField obj(Text, Column, Row) ******//
  TextField registerFinger("REGISTER FINGER", 1, 0);
@@ -328,9 +330,7 @@ void scan()
     delay(50);                                                // don't need to run this at full speed.
   }
 
-  
-  mainMenu();                                                 // and return to the main menu
-  
+  resetFunc();                                                // reset the arduino to the start of the program
 }
 
 

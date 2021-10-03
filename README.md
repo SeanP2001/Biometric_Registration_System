@@ -93,7 +93,7 @@ The .stl and .f3d files for this case are included in the repository.
 |   <img src="/Images/Biometric Registration System Case 2.png" alt="Biometric Registration System Case" />   |   <img src="/Images/Biometric Registration System Case 3.png" alt="Biometric Registration System Case" />   |
 | ---- | ---- |
 
-![Biometric Registration System Case Layout](/Images/Biometric Registration System Case Layout.png)
+<img src="/Images/Biometric Registration System Case Layout.png" alt="Biometric Registration System Case Layout" />
 
 | <img src="/Images/Case Front.jpg" alt="Case Front" /> | <img src="/Images/Case Internals.jpg" alt="Case Internals" /> |
 | ------------------------------------- | ------------------------------------------------------------ |

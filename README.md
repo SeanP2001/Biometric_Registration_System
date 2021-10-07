@@ -27,8 +27,9 @@ This project is designed to record the attendance of students in lectures. The l
 ## Method of Operation
 
 <p align="center">
- <img src="/Images/Registration Menu.gif" style="zoom:50%;" />
+ <img src="./Images/Registration Menu.gif" width="350" />
 </p>
+
 
 ### Logging the Register Data on the Connected PC
 
@@ -37,14 +38,16 @@ This project is designed to record the attendance of students in lectures. The l
 - Select the "Serial" connection type and enter the COM Port that the Arduino is connected to
 
 <p align="center">
-  <img src="/Images/PuTTY Session Settings 1.PNG" alt="PuTTY Session Settings 1" />
+  <img src="./Images/PuTTY Session Settings 1.PNG" alt="PuTTY Session Settings 1" />
 </p>
+
 
 - Set it to log "All session output" and name the file 
 
 <p align="center">
-  <img src="/Images/PuTTY Session Settings 2.PNG" alt="PuTTY Session Settings 2" />
+  <img src="./Images/PuTTY Session Settings 2.PNG" alt="PuTTY Session Settings 2" />
 </p>
+
 
 - Press the "Open" button when the Arduino is connected
 
@@ -76,31 +79,31 @@ This project is designed to record the attendance of students in lectures. The l
 
 This board allows the 3 navigation buttons to be read by 1 Analog input on the Arduino 
 
-|   <img src="/Images/Button PCB Schematic.PNG" alt="Button PCB Schematic" />   | <img src="/Images/Button PCB.PNG" alt="Button PCB" />  |
-| ---- | ---- |
+| <img src="./Images/Button PCB Schematic.PNG" alt="Button PCB Schematic" /> | <img src="./Images/Button PCB.PNG" alt="Button PCB" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------ |
 
 
 
 
 ### Full Schematic
 
-<img src="/Images/Biometric Registration System Full Schematic FROM PDF.png" alt="Biometric Registration System Full Schematic" />
+<img src="./Images/Biometric Registration System Full Schematic FROM PDF.png" alt="Biometric Registration System Full Schematic" />
 
 ## Case
 
 The .stl and .f3d files for this case are included in the repository. 
 
-|   <img src="/Images/Biometric Registration System Case 2.png" alt="Biometric Registration System Case" />   |   <img src="/Images/Biometric Registration System Case 3.png" alt="Biometric Registration System Case" />   |
-| ---- | ---- |
+| <img src="./Images/Biometric Registration System Case 2.png" alt="Biometric Registration System Case" /> | <img src="./Images/Biometric Registration System Case 3.png" alt="Biometric Registration System Case" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
 
-<img src="/Images/Biometric Registration System Case Layout.png" alt="Biometric Registration System Case Layout" />
+<img src="./Images/Biometric Registration System Case Layout.png" alt="Biometric Registration System Case Layout" />
 
-| <img src="/Images/Case Front.jpg" alt="Case Front" /> | <img src="/Images/Case Internals.jpg" alt="Case Internals" /> |
-| ------------------------------------- | ------------------------------------------------------------ |
+| <img src="./Images/Case Front.jpg" alt="Case Front" /> | <img src="./Images/Case Internals.jpg" alt="Case Internals" /> |
+| ------------------------------------------------------ | ------------------------------------------------------------ |
 
 ## Demonstration
 
-[<img src="/Images/Demo Video Screenshot.PNG" alt="Demo Video" />](https://www.youtube.com/watch?v=rIEnxN8tB8w&t "Demo Video")
+[<img src="./Images/Demo Video Screenshot.PNG" alt="Demo Video" />](https://www.youtube.com/watch?v=rIEnxN8tB8w&t "Demo Video")
 
 ## Further Work
 
